@@ -1,6 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext.kotlin_version = "1.4.10"
+    ext.navigationVersion = '2.3.1'
+    ext.daggerHiltCoreVersion = '2.29.1-alpha'
     repositories {
         google()
         jcenter()
@@ -8,7 +10,8 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:4.1.0"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigationVersion"
+        classpath "com.google.dagger:hilt-android-gradle-plugin:$daggerHiltCoreVersion"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -23,4 +26,68 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+ext {
+    // Sdk and tools
+    // Support library and architecture components support minSdk 22 and above.
+    minSdkVersion = 22
+    targetSdkVersion = 30
+    compileSdkVersion = 30
+    buildToolsVersion = '30.0.0'
+    versionCode = 1
+    versionName = "1.0"
+
+    // Core
+    androidXVersion = '1.0.0'
+    appCompatVersion = '1.2.0'
+    materialVersion = '1.2.1'
+    archLifecycleVersion = '2.3.0-beta01'
+    constrainLayoutVersion = '2.0.2'
+    coreKtxVersion = '1.3.2'
+
+
+    //Coroutine
+    coroutinesVersion = '1.3.9'
+
+    // glide
+    glideVersion = '4.11.0'
+    glidePaletteVersion = '2.1.2'
+
+    // network
+    retrofitVersion = '2.9.0'
+    okhttpVersion = '4.9.0'
+
+    // moshi
+    moshiVersion = '1.11.0'
+    moshiConverterVersion = '2.7.2'
+
+    //Room
+    roomVersion = '2.2.5'
+
+    //Paging
+    pagingVersion = '3.0.0-alpha07'
+
+
+    // di
+    daggerHiltVersion = '1.0.0-alpha02'
+
+
+    //Test
+    archTestingVersion = '2.1.0'
+    androidXTestCoreVersion = '1.3.0'
+    androidXTestExtKotlinRunnerVersion = '1.1.2'
+
+    // Unit Test
+    hamcrestVersion = '1.3'
+    junitVersion = '4.13.1'
+    robolectricVersion = '4.4'
+
+    // Instrument Test
+    espressoVersion = '3.3.0'
+    androidJunitVersion = '1.1.2'
+    mockitoVersion = '3.5.13'
+    dexMakerMockitoVersion = '2.12.1'
+    fragmentTestVersion = '1.3.0-beta01'
+
 }
