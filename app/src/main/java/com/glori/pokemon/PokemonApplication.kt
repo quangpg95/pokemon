@@ -1,6 +1,7 @@
 package com.glori.pokemon
 
 import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 
-class PokemonApplication : Application() {
-}
+@HiltAndroidApp
+class PokemonApplication : Application()
