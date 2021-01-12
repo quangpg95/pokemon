@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.glori.pokemon.model.Pokemon
 
-@Entity(tableName = "pokemon")
+@Entity(tableName = "Pokemon")
 data class PokemonDB(
     val name: String,
     @PrimaryKey
@@ -16,7 +16,7 @@ data class PokemonDB(
 
 fun List<Pokemon>.mapToDB(offset: String?): List<PokemonDB> {
     return map {
-        val index = it.url.toUri().lastPathSegment ?: "25"
+        val index = it.url.toUri().lastPathSegment ?: "25"/*pikachu*/
         val imageUrl =
             "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$index.png"
         PokemonDB(name = it.name, url = imageUrl, nextOffset = offset)

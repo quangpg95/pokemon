@@ -9,7 +9,7 @@ import com.glori.pokemon.databinding.ItemPokemonBinding
 import com.glori.pokemon.domain.PokemonUI
 
 const val ITEM_TYPE = 1
-const val HEADER_FOOTER_TYPE = 2
+const val HEADER_FOOTER_TYPE = 2//loading type
 
 class PokemonAdapter(private val clickListener: OnPokemonClickListener) :
     PagingDataAdapter<PokemonUI, PokemonViewHolder>(POKEMON_COMPARATOR) {
@@ -21,6 +21,8 @@ class PokemonAdapter(private val clickListener: OnPokemonClickListener) :
         return PokemonViewHolder.create(parent, clickListener)
     }
 
+    // Glori: Intended to be used to display the loading progress bar in the center of the screen
+    // when loading more item. If not, loading progress bar display in left of the screen
     override fun getItemViewType(position: Int): Int {
         return if (position == itemCount) {
             ITEM_TYPE

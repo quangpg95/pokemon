@@ -6,13 +6,14 @@ import androidx.room.withTransaction
 import com.glori.pokemon.database.AppDatabase
 import com.glori.pokemon.database.PokemonDB
 import com.glori.pokemon.database.mapToDB
-import com.glori.pokemon.domain.PokemonUI
-import com.glori.pokemon.domain.mapToUI
 import com.glori.pokemon.network.PokemonClient
 import kotlinx.coroutines.flow.Flow
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
+
+private const val NETWORK_PAGE_SIZE = 20
+private const val NETWORK_INIT_LOAD_SIZE = 50
 
 @ExperimentalPagingApi
 class PokemonListRepository @Inject constructor(
@@ -20,24 +21,14 @@ class PokemonListRepository @Inject constructor(
     private val pokemonClient: PokemonClient
 ) {
 
-
-
-    fun fetPokemonList(): Flow<PagingData<PokemonUI>> {
+    // Glori: pokemon list flow from pager
+    fun fetPokemonList(): Flow<PagingData<PokemonDB>> {
         return Pager(
             PagingConfig(
-                pageSize = NETWORK_PAGE_SIZE,
-                enablePlaceholders = true,
-            ),
-            pagingSourceFactory = {
-                PokemonPagingSource(pokemonClient)
-            }
-        ).flow
-    }
-
-    fun fetPokemonListFromDB(): Flow<PagingData<PokemonDB>> {
-        return Pager(
-            PagingConfig(
+                enablePlaceholders = false,
+                initialLoadSize = NETWORK_INIT_LOAD_SIZE,
                 pageSize = NETWORK_PAGE_SIZE
+
             ),
             remoteMediator = PokemonMediator(appDatabase, pokemonClient)
         ) {
@@ -47,11 +38,8 @@ class PokemonListRepository @Inject constructor(
     }
 }
 
-private const val NETWORK_PAGE_SIZE = 20
-private const val STARTING_PAGE_INDEX = 0
-
-
 @ExperimentalPagingApi
+// Glori: get data from the server and then dump it into the database
 class PokemonMediator constructor(
     val database: AppDatabase,
     private val pokemonClient: PokemonClient
@@ -61,18 +49,26 @@ class PokemonMediator constructor(
         state: PagingState<Int, PokemonDB>
     ): MediatorResult {
         return try {
+            // Glori: key to load init page or next page.
             val offset = when (loadType) {
                 LoadType.REFRESH -> "0"
-                LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
-                LoadType.APPEND -> {
+                LoadType.PREPEND -> return MediatorResult.Success(true)
+                LoadType.APPEND -> {// Glori: Get the key to load the next page from the database or notify end of the list
                     val lastItem = state.lastItemOrNull()
-                        ?: return MediatorResult.Success(
-                            endOfPaginationReached = true
-                        )
+                    //End of the list
+                    if (lastItem?.nextOffset == null) {
+                        return MediatorResult.Success(true)
+                    }
                     lastItem.nextOffset
                 }
             }
-            val response = pokemonClient.fetchPokemonList(state.config.pageSize, offset)
+            val response = pokemonClient.fetchPokemonList(
+                when (loadType) {
+                    LoadType.REFRESH -> state.config.initialLoadSize
+                    else -> state.config.pageSize
+                }, offset
+            )
+            // Glori: key is saved in the database for data to load the next page.
             val nextOffset = response.next?.toUri()?.getQueryParameter("offset")
             val items = response.results.mapToDB(nextOffset)
             database.withTransaction {
@@ -91,24 +87,3 @@ class PokemonMediator constructor(
         }
     }
 }
-
-class PokemonPagingSource(private val pokemonClient: PokemonClient) :
-    PagingSource<Int, PokemonUI>() {
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, PokemonUI> {
-        val position = params.key ?: STARTING_PAGE_INDEX
-        return try {
-            val response = pokemonClient.fetchPokemonList(params.loadSize, position.toString())
-            val pokemonList = response.results.mapToUI()
-            LoadResult.Page(
-                pokemonList,
-                if (position == 0) null else position - params.loadSize,
-                if (pokemonList.isEmpty()) null else position + params.loadSize
-            )
-        } catch (exception: IOException) {
-            return LoadResult.Error(exception)
-        } catch (exception: HttpException) {
-            return LoadResult.Error(exception)
-        }
-    }
-}
-

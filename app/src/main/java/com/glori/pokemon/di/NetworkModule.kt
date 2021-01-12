@@ -1,17 +1,16 @@
 package com.glori.pokemon.di
 
-import android.content.Context
 import com.glori.pokemon.network.NoConnectionInterceptor
 import com.glori.pokemon.network.PokemonClient
 import com.glori.pokemon.network.PokemonService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module

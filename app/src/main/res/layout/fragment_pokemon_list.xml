@@ -7,7 +7,7 @@
 
         <variable
             name="adapter"
-            type="androidx.recyclerview.widget.ConcatAdapter" />
+            type="androidx.recyclerview.widget.RecyclerView.Adapter" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,21 +15,29 @@
         android:layout_height="match_parent"
         tools:context=".ui.main.PokemonListFragment">
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            adapter="@{adapter}"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/refreshBar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical"
-            android:scrollbarThumbVertical="@drawable/bg_vertical_scrollbar"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:spanCount="2"
-            tools:itemCount="10"
-            tools:listitem="@layout/item_pokemon" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                adapter="@{adapter}"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbarThumbVertical="@drawable/bg_vertical_scrollbar"
+                android:scrollbars="vertical"
+                android:visibility="visible"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="2"
+                tools:itemCount="10"
+                tools:listitem="@layout/item_pokemon" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvErrorMessage"
@@ -39,19 +47,21 @@
             android:textAlignment="center"
             android:textColor="?android:textColorPrimary"
             android:textSize="24sp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Timeout" />
+            tools:text="Timeout"
+            tools:visibility="visible" />
 
         <com.github.ybq.android.spinkit.SpinKitView
             android:id="@+id/progressLoading"
             style="@style/SpinKitView.ThreeBounce"
-            app:SpinKit_Color="@color/teal_200"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            app:SpinKit_Color="@color/teal_200"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -64,8 +74,10 @@
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
             android:text="@string/retry"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvErrorMessage" />
+            app:layout_constraintTop_toBottomOf="@+id/tvErrorMessage"
+            tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

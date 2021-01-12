@@ -9,17 +9,14 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
-import androidx.paging.flatMap
-import androidx.paging.map
 import androidx.recyclerview.widget.GridLayoutManager
 import com.glori.pokemon.databinding.FragmentPokemonListBinding
-import com.glori.pokemon.domain.PokemonUI
 import com.glori.pokemon.ui.adapter.BaseLoadStateAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 @ExperimentalPagingApi
@@ -28,41 +25,47 @@ class PokemonListFragment : Fragment() {
     private val viewModel: PokemonListViewModel by viewModels()
     private lateinit var binding: FragmentPokemonListBinding
 
-    private val adapter: PokemonAdapter = PokemonAdapter(OnPokemonClickListener {
-        Toast.makeText(requireContext(), it.name, Toast.LENGTH_SHORT).show()
-    })
+    private val pokemonAdapter: PokemonAdapter =
+        PokemonAdapter(OnPokemonClickListener { pokemonUI ->
+//            Toast.makeText(requireContext(), pokemonUI.name, Toast.LENGTH_SHORT).show()
+            findNavController().navigate(
+                PokemonListFragmentDirections.actionPokemonListFragmentToPokemonDetailFragment(
+                    pokemonUI.name, pokemonUI.imageUrl
+                )
+            )
+        })
+
+    init {
+        lifecycleScope.launchWhenCreated {
+            viewModel.pokemonList.collectLatest {
+                pokemonAdapter.submitData(it)
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentPokemonListBinding.inflate(
             inflater,
             container, false
         )
-        binding.adapter = adapter.withLoadStateHeaderAndFooter(
-            header = BaseLoadStateAdapter {
-                adapter.retry()
-            },
-            footer = BaseLoadStateAdapter {
-                adapter.retry()
-            }
-        )
+        binding.adapter = pokemonAdapter
+            .withLoadStateFooter(
+                footer = BaseLoadStateAdapter(pokemonAdapter)
+            )
         return binding.root
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        lifecycleScope.launchWhenCreated {
-            viewModel.pokemonList.collectLatest {
-                adapter.submitData(it)
-            }
-        }
         val layoutManager = GridLayoutManager(requireContext(), 2)
+        // Glori: resize span when loading state to progress bar in the center screen
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                return if (adapter.getItemViewType(position) == HEADER_FOOTER_TYPE) {
+                return if (pokemonAdapter.getItemViewType(position) == HEADER_FOOTER_TYPE) {
                     1
                 } else {
                     2
@@ -71,13 +74,21 @@ class PokemonListFragment : Fragment() {
         }
         binding.recyclerView.layoutManager = layoutManager
         binding.btnRetry.setOnClickListener {
-            adapter.retry()
+            pokemonAdapter.retry()
         }
-        adapter.addLoadStateListener { loadState ->
+        binding.refreshBar.setOnRefreshListener {
+            pokemonAdapter.refresh()
+        }
+        // Glori: handle load state
+        pokemonAdapter.addLoadStateListener { loadState ->
             binding.apply {
                 progressLoading.isVisible = loadState.refresh is LoadState.Loading
-                tvErrorMessage.isVisible = loadState.refresh is LoadState.Error
-                btnRetry.isVisible = loadState.refresh is LoadState.Error
+                tvErrorMessage.isVisible =
+                    (loadState.refresh is LoadState.Error) && pokemonAdapter.itemCount == 0
+                btnRetry.isVisible =
+                    (loadState.refresh is LoadState.Error) && pokemonAdapter.itemCount == 0
+                refreshBar.isRefreshing = loadState.refresh is LoadState.Loading
+
                 // Toast on any error, regardless of whether it came from RemoteMediator or PagingSource
                 val errorState = loadState.source.append as? LoadState.Error
                     ?: loadState.source.prepend as? LoadState.Error

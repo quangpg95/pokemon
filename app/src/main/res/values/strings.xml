@@ -2,4 +2,8 @@
     <string name="app_name">Pokemon</string>
     <string name="retry">Retry</string>
     <string name="no_internet_message">No network available, please check your WiFi or Data connection</string>
+    <string name="weight_format">%1$s KG</string>
+    <string name="height_format">%1$s M</string>
+    <string name="weight">Weight</string>
+    <string name="height">Height</string>
 </resources>

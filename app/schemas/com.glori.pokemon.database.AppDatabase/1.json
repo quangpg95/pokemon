@@ -2,10 +2,10 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "9282c46f47e5b076bfa7b67396d29509",
+    "identityHash": "924f6f5882c79290387c372147f4afcf",
     "entities": [
       {
-        "tableName": "pokemon",
+        "tableName": "Pokemon",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `url` TEXT NOT NULL, `nextOffset` TEXT, PRIMARY KEY(`url`))",
         "fields": [
           {
@@ -35,12 +35,62 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "PokemonDetail",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `base_experience` INTEGER NOT NULL, `height` INTEGER NOT NULL, `name` TEXT NOT NULL, `types` TEXT NOT NULL, `weight` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "baseExperience",
+            "columnName": "base_experience",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "height",
+            "columnName": "height",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "types",
+            "columnName": "types",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "weight",
+            "columnName": "weight",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9282c46f47e5b076bfa7b67396d29509')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '924f6f5882c79290387c372147f4afcf')"
     ]
   }
 }

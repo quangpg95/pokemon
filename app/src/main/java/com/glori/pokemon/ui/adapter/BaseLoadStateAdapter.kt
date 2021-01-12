@@ -4,10 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.glori.pokemon.databinding.ItemLoadStateBinding
 
-class BaseLoadStateAdapter(private val retry: () -> Unit) :
+class BaseLoadStateAdapter(val adapter: PagingDataAdapter<*, *>) :
     LoadStateAdapter<BaseLoaderStateViewHolder>() {
     override fun onBindViewHolder(holder: BaseLoaderStateViewHolder, loadState: LoadState) {
         holder.bind(loadState)
@@ -17,19 +18,19 @@ class BaseLoadStateAdapter(private val retry: () -> Unit) :
         parent: ViewGroup,
         loadState: LoadState
     ): BaseLoaderStateViewHolder {
-        return BaseLoaderStateViewHolder.create(parent, retry)
+        return BaseLoaderStateViewHolder.create(parent, adapter)
     }
 }
 
 class BaseLoaderStateViewHolder(
     private val binding: ItemLoadStateBinding,
-    private val retry: () -> Unit
+    private val adapter: PagingDataAdapter<*, *>
 ) :
     RecyclerView.ViewHolder(binding.root) {
 
     init {
         binding.retryButton.setOnClickListener {
-            retry.invoke()
+            adapter.retry()
         }
     }
 
@@ -39,14 +40,14 @@ class BaseLoaderStateViewHolder(
     }
 
     companion object {
-        fun create(parent: ViewGroup, retry: () -> Unit): BaseLoaderStateViewHolder {
+        fun create(parent: ViewGroup, adapter: PagingDataAdapter<*, *>): BaseLoaderStateViewHolder {
             return BaseLoaderStateViewHolder(
                 ItemLoadStateBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 ),
-                retry
+                adapter
             )
         }
     }

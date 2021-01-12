@@ -1,9 +1,9 @@
 package com.glori.pokemon.ui.splash
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.motion.widget.MotionLayout
 import com.glori.pokemon.R
 import com.glori.pokemon.ui.main.MainActivity

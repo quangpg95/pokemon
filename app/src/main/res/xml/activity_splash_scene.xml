@@ -6,7 +6,7 @@
         motion:constraintSetEnd="@+id/end"
         motion:constraintSetStart="@id/start"
         motion:autoTransition="animateToEnd"
-        motion:duration="3000">
+        motion:duration="1000">
         <KeyFrameSet>
             <KeyAttribute
                 android:rotation="360"
