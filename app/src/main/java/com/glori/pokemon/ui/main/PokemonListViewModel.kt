@@ -7,6 +7,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.glori.pokemon.domain.PokemonUI
+import com.glori.pokemon.repository.PokemonListRepository
 import kotlinx.coroutines.flow.*
 
 @ExperimentalPagingApi

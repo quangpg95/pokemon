@@ -1,11 +1,11 @@
-package com.glori.pokemon.ui.detail
+package com.glori.pokemon.repository
 
 import com.glori.pokemon.data.NetworkBoundRepository
+import com.glori.pokemon.data.State
 import com.glori.pokemon.database.AppDatabase
 import com.glori.pokemon.database.PokemonDetailDB
 import com.glori.pokemon.database.mapToDB
 import com.glori.pokemon.model.PokemonDetailResponse
-import com.glori.pokemon.model.State
 import com.glori.pokemon.network.PokemonClient
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response

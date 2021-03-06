@@ -1,6 +1,5 @@
 package com.glori.pokemon.data
 
-import com.glori.pokemon.model.State
 import kotlinx.coroutines.flow.*
 import retrofit2.Response
 

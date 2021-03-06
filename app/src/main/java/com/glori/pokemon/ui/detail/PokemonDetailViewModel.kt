@@ -5,8 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.glori.pokemon.data.State
 import com.glori.pokemon.database.PokemonDetailDB
-import com.glori.pokemon.model.State
+import com.glori.pokemon.repository.PokemonDetailRepository
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -20,7 +21,7 @@ class PokemonDetailViewModel @ViewModelInject constructor(
     fun getPokemon(name: String) {
         viewModelScope.launch {
             repository.getPokemon(name).collect {
-                _pokemon.value = it
+                _pokemon.postValue(it)
             }
         }
 

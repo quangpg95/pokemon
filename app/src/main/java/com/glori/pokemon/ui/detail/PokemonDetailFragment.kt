@@ -9,9 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.paging.ExperimentalPagingApi
+import com.glori.pokemon.data.State
 import com.glori.pokemon.databinding.FragmentPokemonDetailBinding
 import com.glori.pokemon.domain.mapToUI
-import com.glori.pokemon.model.State
 import com.glori.pokemon.ui.custom_view.OnRetryListener
 import dagger.hilt.android.AndroidEntryPoint
 

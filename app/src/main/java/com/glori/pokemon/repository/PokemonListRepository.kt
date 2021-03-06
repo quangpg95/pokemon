@@ -1,4 +1,4 @@
-package com.glori.pokemon.ui.main
+package com.glori.pokemon.repository
 
 import androidx.core.net.toUri
 import androidx.paging.*

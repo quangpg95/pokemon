@@ -1,6 +1,4 @@
-package com.glori.pokemon.model
-
-import java.lang.Exception
+package com.glori.pokemon.data
 
 /**
  * A generic class that holds a value with its loading status.
